@@ -12,9 +12,9 @@ import {
 // 1. UTILIDADES VISUALES
 // ==========================================
 
-// CORRECCIÓN AQUÍ: Agregamos "| null" para calmar a TypeScript
 const useOnScreen = (ref: React.RefObject<HTMLElement | null>, threshold = 0.1) => {
   const [isIntersecting, setIntersecting] = useState(false);
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -25,9 +25,22 @@ const useOnScreen = (ref: React.RefObject<HTMLElement | null>, threshold = 0.1) 
       },
       { threshold }
     );
-    if (ref.current) observer.observe(ref.current);
-    return () => ref.current && observer.unobserve(ref.current);
-  }, [threshold, ref]); // Agregamos ref a las dependencias
+
+    const currentElement = ref.current;
+
+    if (currentElement) {
+      observer.observe(currentElement);
+    }
+
+    // CORRECCIÓN: Usamos una función de limpieza explícita
+    // en lugar de devolver el resultado de una expresión &&
+    return () => {
+      if (currentElement) {
+        observer.unobserve(currentElement);
+      }
+    };
+  }, [threshold, ref]);
+
   return isIntersecting;
 };
 
