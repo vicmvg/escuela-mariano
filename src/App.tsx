@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
-  BookOpen, Calendar, Bell, FileText, Home, 
+  BookOpen, Calendar, FileText, 
   Phone, Mail, MapPin, Download, 
   ChevronRight, Clock, Send, CheckCircle, ArrowRight,
   Sparkles, Brain, Globe, Music, 
@@ -12,7 +12,8 @@ import {
 // 1. UTILIDADES VISUALES
 // ==========================================
 
-const useOnScreen = (ref: React.RefObject<HTMLElement>, threshold = 0.1) => {
+// CORRECCIÓN AQUÍ: Agregamos "| null" para calmar a TypeScript
+const useOnScreen = (ref: React.RefObject<HTMLElement | null>, threshold = 0.1) => {
   const [isIntersecting, setIntersecting] = useState(false);
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -26,7 +27,7 @@ const useOnScreen = (ref: React.RefObject<HTMLElement>, threshold = 0.1) => {
     );
     if (ref.current) observer.observe(ref.current);
     return () => ref.current && observer.unobserve(ref.current);
-  }, [threshold]);
+  }, [threshold, ref]); // Agregamos ref a las dependencias
   return isIntersecting;
 };
 
