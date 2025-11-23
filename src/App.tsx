@@ -33,7 +33,6 @@ const useOnScreen = (ref: React.RefObject<HTMLElement | null>, threshold = 0.1) 
     }
 
     // CORRECCIÓN: Usamos una función de limpieza explícita
-    // en lugar de devolver el resultado de una expresión &&
     return () => {
       if (currentElement) {
         observer.unobserve(currentElement);
@@ -365,7 +364,7 @@ const ParentsCouncilSection = () => (
   </section>
 );
 
-// --- SECCIÓN: DESCARGAS ---
+// --- SECCIÓN: DESCARGAS (ACTUALIZADA con links) ---
 const DownloadsSection = () => (
   <section className="py-24 bg-slate-50">
     <div className="container mx-auto px-6">
@@ -373,12 +372,15 @@ const DownloadsSection = () => (
       
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
-          { title: "Reglamento Escolar", type: "PDF", size: "2.4 MB", icon: <FileText /> },
-          { title: "Lista de Útiles 2025", type: "PDF", size: "1.1 MB", icon: <File /> },
-          { title: "Calendario SEP", type: "PDF", size: "500 KB", icon: <Calendar /> },
-          { title: "Ficha de Inscripción", type: "DOCX", size: "800 KB", icon: <FileText /> }
+          // NOTA IMPORTANTE: Para que estos links funcionen, DEBES poner los archivos
+          // (Reglamento_Escolar.pdf, Lista_Utiles_2025.pdf, etc.) 
+          // en la carpeta "public" de tu proyecto.
+          { title: "Reglamento Escolar", type: "PDF", size: "2.4 MB", icon: <FileText />, file: "/Reglamento_Escolar.pdf" },
+          { title: "Lista de Útiles 2025", type: "PDF", size: "1.1 MB", icon: <File />, file: "/Lista_Utiles_2025.pdf" },
+          { title: "Calendario SEP", type: "PDF", size: "500 KB", icon: <Calendar />, file: "https://www.gob.mx/cms/uploads/attachment/file/998522/Calendario_Escolar_2025_2026.pdf" }, // Usamos un link de SEP real como ejemplo
+          { title: "Ficha de Inscripción", type: "DOCX", size: "800 KB", icon: <FileText />, file: "/Ficha_Inscripcion.docx" }
         ].map((doc, i) => (
-          <div key={i} className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:shadow-lg hover:border-orange-200 transition-all group cursor-pointer">
+          <a key={i} href={doc.file} target="_blank" rel="noopener noreferrer" className="block bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:shadow-lg hover:border-orange-200 transition-all group cursor-pointer">
             <div className="flex items-start justify-between mb-4">
               <div className="p-3 bg-emerald-50 text-emerald-600 rounded-lg group-hover:bg-orange-500 group-hover:text-white transition-colors">
                 {doc.icon}
@@ -387,10 +389,10 @@ const DownloadsSection = () => (
             </div>
             <h3 className="font-bold text-emerald-950 mb-1 group-hover:text-orange-600 transition-colors">{doc.title}</h3>
             <p className="text-xs text-slate-500 mb-4">{doc.size}</p>
-            <button className="w-full py-2 rounded-lg border border-emerald-100 text-emerald-700 font-bold text-sm hover:bg-emerald-50 flex items-center justify-center gap-2 transition-colors">
+            <div className="w-full py-2 rounded-lg border border-emerald-100 text-emerald-700 font-bold text-sm hover:bg-emerald-50 flex items-center justify-center gap-2 transition-colors">
               <Download size={16} /> Descargar
-            </button>
-          </div>
+            </div>
+          </a>
         ))}
       </div>
     </div>
@@ -425,6 +427,7 @@ const SuggestionSection = () => {
         // ============================================================
         // URL DE GOOGLE APPS SCRIPT
         // ============================================================
+        // Esta URL es la que generaste para tu hoja de cálculo.
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxf1qWqB7TLfuJyw2rkZ0DwW5FKFShF8f_wPoHlXWhj0xW_WZaduSeFV3ceYbha50dOKw/exec";
         
         await fetch(SCRIPT_URL, { 
@@ -439,8 +442,7 @@ const SuggestionSection = () => {
           setMessage('');
         }, 4000);
       } catch (error) {
-        // Nota: A veces Google devuelve error de CORS aunque sí guarde los datos.
-        // Podrías asumir éxito si no quieres mostrar error a menos que sea crítico.
+        // Si hay un error de red o similar, se muestra el estado de error temporalmente.
         console.error("Error al enviar:", error);
         setStatus('error');
         setTimeout(() => setStatus('idle'), 3000);
