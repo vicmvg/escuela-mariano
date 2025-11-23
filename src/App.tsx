@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
-  BookOpen, Calendar, FileText, 
+  Calendar, FileText, 
   Phone, Mail, MapPin, Download, 
   ChevronRight, Clock, Send, CheckCircle, ArrowRight,
   Sparkles, Brain, Globe, Music, 
@@ -134,11 +134,30 @@ export default function App() {
         <div className="container mx-auto px-4 lg:px-8">
           <div className="flex justify-between items-center">
             
-            {/* Logo */}
+            {/* Logo y Título - MODIFICADO para usar imagen /logo.png */}
             <div className="flex items-center gap-3 cursor-pointer group shrink-0" onClick={() => navigateTo('home')}>
-              <div className="bg-orange-500 p-2 rounded-lg text-white shadow-lg group-hover:scale-105 transition-transform">
-                <BookOpen size={24} strokeWidth={2.5} />
-              </div>
+              <img 
+                src="/logo.png" // La ruta busca el archivo en la carpeta 'public'
+                alt="Logo Escuela Mariano Escobedo"
+                // Añade un fallback visual si el logo no carga, aunque es ideal que siempre esté
+                className="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.onerror = null;
+                  target.style.display = 'none'; // Oculta la imagen
+                  
+                  // Muestra el icono de fallback si la imagen falla al cargar
+                  const fallbackIcon = document.createElement('div');
+                  fallbackIcon.className = 'bg-orange-500 p-2 rounded-lg text-white shadow-lg group-hover:scale-105 transition-transform';
+                  fallbackIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>';
+                  
+                  const parentDiv = target.closest('.flex.items-center.gap-3');
+                  if (parentDiv) {
+                    // Intenta insertar el icono antes de la imagen, o al inicio
+                    parentDiv.insertBefore(fallbackIcon, target);
+                  }
+                }}
+              />
               <div className="flex flex-col">
                 <span className="text-[10px] font-bold tracking-widest text-emerald-300 uppercase">Primaria</span>
                 <h1 className="text-lg md:text-xl font-serif font-bold leading-none text-white tracking-wide">
@@ -217,7 +236,13 @@ export default function App() {
       <footer className="bg-emerald-950 text-white py-12 border-t-4 border-orange-500">
         <div className="container mx-auto px-6 text-center">
           <div className="flex justify-center items-center gap-3 mb-6">
-             <BookOpen className="text-orange-500" size={32} />
+             {/* Logo en Footer: Usamos una imagen más pequeña para el footer */}
+             <img 
+                src="/logo.png" 
+                alt="Logo Escuela Mariano Escobedo"
+                className="h-8 w-auto object-contain"
+                onError={() => { /* Evitar error si no hay logo */ }}
+              />
              <h2 className="text-2xl font-serif font-bold">Mariano Escobedo</h2>
           </div>
           <p className="text-emerald-200 text-sm mb-8 max-w-md mx-auto">
@@ -364,7 +389,7 @@ const ParentsCouncilSection = () => (
   </section>
 );
 
-// --- SECCIÓN: DESCARGAS (ACTUALIZADA con links) ---
+// --- SECCIÓN: DESCARGAS ---
 const DownloadsSection = () => (
   <section className="py-24 bg-slate-50">
     <div className="container mx-auto px-6">
@@ -592,7 +617,7 @@ const TeachersSection = () => (
         {[
             { role: "Directora", img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&h=400" },
             { role: "Titular 1º Grado", img: "https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=400&h=400" },
-            { role: "Titular 6º Grado", img: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&h=400" }
+            { role: "Titular 6º Grado", img: "https://images.unsplash-com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&h=400" }
         ].map((t, i) => (
            <div key={i} className="group relative overflow-hidden rounded-2xl aspect-square shadow-lg">
              <img src={t.img} alt="Docente" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
